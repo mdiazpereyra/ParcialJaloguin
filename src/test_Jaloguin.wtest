@@ -1,0 +1,68 @@
+import Ninio.*
+import Elementos.*
+import Adulto.*
+import Legiones.*
+import Barrio.*
+
+describe "tests de Jalogüin"{
+	var pepe
+	var juan
+	var laura
+	var paula
+	var recoleta
+	var payaso
+	var zombie
+	var gerardo
+	var cholo
+	var ana
+	var maestrosDelSusto
+	
+	fixture{
+		payaso = new Maquillaje()
+		zombie = new Maquillaje()
+		pepe = new Ninio(#{winniePooh}, 8, 11)
+		juan = new Ninio(#{jason}, 6, 20)
+		laura = new Ninio(#{payaso}, 3, 4)
+		paula = new Ninio(#{zombie, georgeBush}, 10, 16)
+		recoleta = new Barrio(#{pepe, juan, laura, paula})
+		gerardo = new AdultoComun(20, 5)
+		cholo = new Abuelo(30, 2)
+		ana = new AdultoNecio(3, 7)
+		maestrosDelSusto = new Legion(#{pepe, juan, laura, paula}, juan)
+	}
+	
+	test "Obtener la capacidad de asustar de un niño" {
+		assert.equals(16, pepe.capacidadAsustar())
+	}
+	
+	test "Hacer que un niño intente asustar a alguien, obteniendo los caramelos" {
+		paula.asustar(gerardo)
+		assert.equals(41, paula.caramelos())
+	}
+	
+	test "Si una legión tiene menos de dos niños no debe poder crearse" {
+		assert.throwsException{ new Legion([pepe], pepe) }
+	}
+	
+	test "Hacer que una legión intente asustar a una persona, obteniendo los caramelos" {
+		maestrosDelSusto.asustar(ana)
+		assert.equals(51, maestrosDelSusto.caramelos())
+	}
+	
+	test "De un barrio, obtener los tres niños que más caramelos tienen" {
+		assert.equals( [juan, paula, pepe], recoleta.tresNiniosConMasCaramelos() )
+	}
+	
+	test "De un barrio, obtener los elementos, sin repetidos, usados por los niños con más de 10 caramelos" {
+		assert.equals( [ #{georgeBush, zombie}, #{jason}, #{winniePooh} ], recoleta.elementosDeNiniosConMasDe10Caramelos() )
+	}
+	
+	test "Hacer que un niño se coma una cantidad dada de caramelos" {
+		juan.comerCaramelos(10)
+		assert.equals(10, juan.caramelos())
+	}
+	
+	test "Un niño no puede comer caramelos que no tiene" {
+		assert.throwsException{ laura.comerCaramelos(10) }
+	}
+}
